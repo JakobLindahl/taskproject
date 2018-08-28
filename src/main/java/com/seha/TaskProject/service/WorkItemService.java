@@ -134,7 +134,7 @@ public final class WorkItemService {
     }
 
     public List<WorkItem> getAllWorkItemsByTeamId(Long teamId) {
-        List<User> users = userRepository.findUsersByTeamId(teamId);
+        List<User> users = userRepository.findUsersByTeamsId(teamId);
         if (users.isEmpty()) {
             throw new BadTeamException("No users for team with id: " + teamId);
         }

@@ -91,7 +91,7 @@ public final class UserService {
     public List<User> getAllUsersInTeamByTeamName(String teamName) {
         Optional<Team> team = teamRepository.findByName(teamName);
         if (team.isPresent()) {
-            return userRepository.getAllByTeamId(team.get().getId());
+            return userRepository.getAllByTeamsId(team.get().getId());
         }
         throw new BadTeamException("No team with team name: " + teamName);
     }
