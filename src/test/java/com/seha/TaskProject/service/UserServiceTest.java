@@ -58,4 +58,14 @@ public class UserServiceTest {
         boolean userNotFound = userService.inactivateUser(1018L);
         assertFalse(userNotFound);
     }
+
+    @Test
+    public void changeUsername(){
+        User user = userService.createUser(new User("muahaha", "ahahaum", "daUserName", -1L));
+        userService.changeUserName("changingName", user.getUserNumber());
+        user = userService.getUserByUserNumber(user.getUserNumber()).get();
+        assertTrue(user.getUserName().equalsIgnoreCase("changingName"));
+        userService.inactivateUser(user.getUserNumber());
+    }
+
 }
