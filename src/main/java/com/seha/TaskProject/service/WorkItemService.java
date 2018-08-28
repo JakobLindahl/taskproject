@@ -1,9 +1,5 @@
 package com.seha.TaskProject.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import com.seha.TaskProject.data.Issue;
 import com.seha.TaskProject.data.User;
 import com.seha.TaskProject.data.WorkItem;
@@ -15,6 +11,10 @@ import com.seha.TaskProject.service.exceptions.BadIssueException;
 import com.seha.TaskProject.service.exceptions.BadTeamException;
 import com.seha.TaskProject.service.exceptions.BadUserException;
 import com.seha.TaskProject.service.exceptions.BadWorkitemException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -44,11 +44,11 @@ public final class WorkItemService {
         validateStatus(status);
         LocalDate parsedStartDate = validateDate(startDate);
         LocalDate parsedEndDate = validateDate(endDate);
-        List<WorkItem> workItems =  workItemRepository.findAll().stream().filter(w -> w.getUpdateDate().compareTo(parsedStartDate) >= 0 &&
+        List<WorkItem> workItems = workItemRepository.findAll().stream().filter(w -> w.getUpdateDate().compareTo(parsedStartDate) >= 0 &&
                 w.getUpdateDate().compareTo(parsedEndDate) <= 0 &&
                 w.getStatus().toString().equals(status))
                 .collect(Collectors.toList());
-        if(workItems.isEmpty()) {
+        if (workItems.isEmpty()) {
             throw new BadWorkitemException("No workitems for that time period.");
         }
         return workItems;
@@ -115,6 +115,22 @@ public final class WorkItemService {
         workItemRepository.save(workItem.get());
     }
 
+    public void addWorkItemByHelperId(Long workItemId, Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<WorkItem> workItem = workItemRepository.findById(workItemId);
+        if (!user.isPresent()) {
+            throw new BadUserException("No User with that id");
+        } else if (!workItem.isPresent()) {
+            throw new BadWorkitemException("No Workitem with that id");
+        } else if (!user.get().getActive()) {
+            throw new BadUserException("User is not active");
+        } else if ((workItem.get().getUser()) == null) {
+            throw new BadWorkitemException("No user assigned to workItem");
+        }
+        workItem.get().addHelper(user.get());
+        workItemRepository.save(workItem.get());
+    }
+
     public List<WorkItem> getAllWorkItemsByTeamId(Long teamId) {
         List<User> users = userRepository.findUsersByTeamId(teamId);
         if (users.isEmpty()) {
@@ -177,12 +193,12 @@ public final class WorkItemService {
     }
 
     private LocalDate validateDate(String date) {
-        if(date == null) {
+        if (date == null) {
             throw new BadWorkitemException("Enter information for both dates.");
         }
         try {
             return LocalDate.parse(date);
-        }catch (DateTimeParseException e) {
+        } catch (DateTimeParseException e) {
             throw new BadWorkitemException("Invalid date format, please enter date by YYYY-mm-dd.");
         }
     }

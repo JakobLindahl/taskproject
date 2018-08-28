@@ -32,6 +32,7 @@ public final class User {
     @ManyToOne
     private Team team;
 
+
     protected User() {
         this.userNumber = null;
     }
@@ -100,4 +101,5 @@ public final class User {
     public void setTeam(Team team) {
         this.team = team;
     }
+
 }

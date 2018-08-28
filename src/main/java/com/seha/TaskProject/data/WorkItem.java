@@ -6,6 +6,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlTransient;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public final class WorkItem {
@@ -32,6 +34,9 @@ public final class WorkItem {
     @XmlTransient
     private User user;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<User> helpers;
+
     @OneToOne(orphanRemoval = true)
     @XmlTransient
     private Issue issue;
@@ -39,11 +44,13 @@ public final class WorkItem {
     protected WorkItem() {
         this.name = null;
         this.description = null;
+        this.helpers = new ArrayList<>();
     }
 
     public WorkItem(String name, String description) {
         this.name = name;
         this.description = description;
+        this.helpers = new ArrayList<>();
         status = Status.UNSTARTED;
     }
 
@@ -81,5 +88,13 @@ public final class WorkItem {
 
     public LocalDate getUpdateDate() {
         return updateDate;
+    }
+
+    public boolean addHelper(User helper) {
+        return this.helpers.add(helper);
+    }
+
+    public boolean removeHelper(User helper) {
+        return this.helpers.remove(helper);
     }
 }
