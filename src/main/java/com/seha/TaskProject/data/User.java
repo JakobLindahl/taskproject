@@ -29,8 +29,8 @@ public final class User {
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.PERSIST}, mappedBy = "user")
     private List<WorkItem> workItems;
 
-    @ManyToOne
-    private Team team;
+    @ManyToMany(mappedBy = "users")
+    private List<Team> teams;
 
     protected User() {
         this.userNumber = null;
@@ -42,6 +42,7 @@ public final class User {
         this.userName = userName;
         this.userNumber = userNumber;
         workItems = new ArrayList<>();
+        teams = new ArrayList<>();
     }
 
     public Long getId() {
@@ -93,11 +94,7 @@ public final class User {
         workItem.setUser(this);
     }
 
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
+    public List<Team> getTeams() {
+        return teams;
     }
 }

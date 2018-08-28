@@ -18,7 +18,7 @@ public interface UserRepository extends CrudRepository<User, Long>, PagingReposi
 
     List<User> findAll();
 
-    List<User> getAllByTeamId(Long id);
+    List<User> getAllByTeamsId(Long id);
 
-    List<User> findUsersByTeamId(Long teamId);
+    List<User> findUsersByTeamsId(Long teamId);
 }
