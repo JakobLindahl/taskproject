@@ -18,10 +18,11 @@ public final class Team {
     @Column(nullable = false)
     private Boolean active;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "team", cascade = {CascadeType.DETACH, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<User> users;
 
     protected Team() {
+        users = new ArrayList<>();
     }
 
     public Team(String name, Boolean active) {
@@ -55,8 +56,8 @@ public final class Team {
         return users;
     }
 
-    public void setUser(User user) {
-        users.add(user);
-        user.setTeam(this);
+    public void addUser(User user){
+        this.users.add(user);
     }
+
 }

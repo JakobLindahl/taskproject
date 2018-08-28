@@ -1,12 +1,13 @@
 package com.seha.TaskProject.service;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 import com.seha.TaskProject.data.Team;
 import com.seha.TaskProject.data.User;
 import com.seha.TaskProject.repository.TeamRepository;
 import com.seha.TaskProject.repository.UserRepository;
 import com.seha.TaskProject.service.exceptions.BadTeamException;
+import com.seha.TaskProject.service.exceptions.ToManyTeamsException;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public final class TeamService {
 
     public Iterable<Team> getAllTeams() {
         Iterable<Team> teams = teamRepository.findAll(Sort.by("name"));
-        if(!teams.iterator().hasNext()) {
+        if (!teams.iterator().hasNext()) {
             throw new BadTeamException("No teams in database.");
         }
         return teams;
@@ -63,14 +64,14 @@ public final class TeamService {
             throw new BadTeamException("No team matching that ID was found");
         } else if (!user.isPresent()) {
             throw new BadTeamException("No user matching that ID was found");
-        } else if (user.get().getTeam() == null) {
+        } else if (teamRepository.findTeamsByUser(user.get().getId()).size() < 3) {
             validateTeam(team.get());
             user.ifPresent(u -> {
-                team.get().setUser(u);
-                userRepository.save(user.get());
+                    team.get().addUser(u);
+                    teamRepository.save(team.get());
             });
         } else
-            throw new BadTeamException("User is already assigned to a team");
+            throw new ToManyTeamsException("User are already in 3 teams");
     }
 
     private void validateTeam(Team team) {
