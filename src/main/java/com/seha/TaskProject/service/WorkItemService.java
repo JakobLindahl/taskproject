@@ -174,13 +174,13 @@ public final class WorkItemService {
 
     private void validateStatus(String newStatus) {
         if (!Arrays.asList("STARTED", "UNSTARTED", "PENDING", "DONE").contains(newStatus)) {
-            throw new BadWorkitemException("status=? , do not contain DONE, STARTED, PENDING or UNSTARTED");
+            throw new BadWorkitemException("status must be either DONE, STARTED, PENDING or UNSTARTED");
         }
     }
 
     private void validatePendingStatus(String newStatus, String previousStatus){
         if (newStatus.equals("PENDING") && !previousStatus.equals("STARTED")) {
-            throw new BadWorkitemException("status PENDING , can only be accessed via STARTED");
+            throw new BadWorkitemException("status PENDING can only be accessed via STARTED");
         }
         if (previousStatus.equals("PENDING") && !newStatus.equals("STARTED")) {
             throw new BadWorkitemException("status " + newStatus + "can not be accessed via PENDING");
