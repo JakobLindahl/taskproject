@@ -54,6 +54,12 @@ public final class UserResource {
         }
         return Response.status(NOT_FOUND).build();
     }
+    @PUT
+    @Path("changename/{userNumber}")
+    public Response changeName(@PathParam("userNumber") Long userNumber, @QueryParam("userName") String newName) {
+        userService.changeUserName(newName, userNumber);
+        return Response.ok().build();
+    }
 
     @GET
     public Iterable<User> getAllUsers() {
