@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,6 +77,7 @@ public final class WorkItemService {
         Optional<WorkItem> workItems = workItemRepository.findById(id);
         if (workItems.isPresent()) {
             validateStatus(status);
+            validatePendingStatus(status, workItems.get().getStatus().name());
             workItems.get().setStatus(Status.valueOf(status));
             workItemRepository.save(workItems.get());
             return true;
@@ -186,9 +188,18 @@ public final class WorkItemService {
         }
     }
 
-    private void validateStatus(String status) {
-        if (!status.equals("STARTED") && !status.equals("UNSTARTED") && !status.equals("DONE")) {
-            throw new BadWorkitemException("status=? , do not contain DONE, STARTED or UNSTARTED");
+    private void validateStatus(String newStatus) {
+        if (!Arrays.asList("STARTED", "UNSTARTED", "PENDING", "DONE").contains(newStatus)) {
+            throw new BadWorkitemException("status must be either DONE, STARTED, PENDING or UNSTARTED");
+        }
+    }
+
+    private void validatePendingStatus(String newStatus, String previousStatus){
+        if (newStatus.equals("PENDING") && !previousStatus.equals("STARTED")) {
+            throw new BadWorkitemException("status PENDING can only be accessed via STARTED");
+        }
+        if (previousStatus.equals("PENDING") && !newStatus.equals("STARTED")) {
+            throw new BadWorkitemException("status " + newStatus + "can not be accessed via PENDING");
         }
     }
 
