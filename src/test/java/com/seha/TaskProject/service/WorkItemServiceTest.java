@@ -30,7 +30,7 @@ public class WorkItemServiceTest {
      */
     @Test(expected = BadWorkitemException.class)
     public void addWorkItemByUserIdWithWrongWorkItemId() throws Exception {
-        workItemService.addWorkItemByUserId(18282L, 7L);
+        workItemService.addWorkItemByUserId(18282L, 1L);
     }
 
     /*

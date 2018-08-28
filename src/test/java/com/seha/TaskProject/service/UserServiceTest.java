@@ -46,7 +46,7 @@ public class UserServiceTest {
      */
     @Test
     public void inactivateUser() {
-        boolean userFound = userService.inactivateUser(1003L);
+        boolean userFound = userService.inactivateUser(1001L);
         assertTrue(userFound);
     }
 
