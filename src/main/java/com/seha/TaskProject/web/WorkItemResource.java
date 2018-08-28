@@ -1,13 +1,11 @@
 package com.seha.TaskProject.web;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 import com.seha.TaskProject.data.Issue;
 import com.seha.TaskProject.data.WorkItem;
 import com.seha.TaskProject.data.workitemenum.Status;
 import com.seha.TaskProject.service.WorkItemService;
 import com.seha.TaskProject.web.filter.TokenKey;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -47,6 +45,14 @@ public final class WorkItemResource {
     public Response addIssueToWorkItem(@PathParam("id") Long id, Issue issue) {
         workItemService.addIssueToWorkItem(id, issue);
         return Response.status(CREATED).build();
+    }
+
+    @PUT
+    @Path("{id}/helpers/{userId}")
+    public Response addWorkItemByHelperId(@PathParam("id") Long workItemId,
+                                        @PathParam("userId") Long userId) {
+        workItemService.addWorkItemByHelperId(workItemId, userId);
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @PUT
