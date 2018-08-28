@@ -16,6 +16,7 @@ import com.seha.TaskProject.service.exceptions.BadTeamException;
 import com.seha.TaskProject.service.exceptions.BadUserException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -126,5 +127,16 @@ public final class UserService {
         if (user.getUserName().length() < 10) {
             throw new BadUserException("Username cannot be shorter than 10 characters");
         }
+    }
+
+    public void changeUserName(String changingName, long l) {
+        Optional<User> userop = userRepository.findUserByuserNumber(l);
+        User user;
+        if(userop.isPresent())
+            user = userop.get();
+        else
+            throw new NoSuchElementException();
+        user.setUserName(changingName);
+        userRepository.save(user);
     }
 }
