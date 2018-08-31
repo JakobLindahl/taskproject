@@ -22,11 +22,11 @@ public final class TeamService {
         this.userRepository = userRepository;
     }
 
-    public void createTeam(Team team) {
+    public Team createTeam(Team team) {
         if (team.getName() == null || team.getActive() == null) {
             throw new BadTeamException("All required values for the team has not been assigned");
         }
-        teamRepository.save(team);
+        return teamRepository.save(team);
     }
 
     public boolean updateTeam(Long id, Team team) {
