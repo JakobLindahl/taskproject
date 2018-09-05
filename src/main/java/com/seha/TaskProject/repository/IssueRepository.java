@@ -8,4 +8,6 @@ import java.util.List;
 public interface IssueRepository extends CrudRepository<Issue, Long>, PagingRepository<Issue> {
 
     List<Issue> findAll();
+
+    Issue findByWorkItemId(Long workItemId);
 }

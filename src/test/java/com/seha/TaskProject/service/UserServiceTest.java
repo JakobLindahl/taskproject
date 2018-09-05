@@ -2,11 +2,15 @@ package com.seha.TaskProject.service;
 
 import com.seha.TaskProject.data.User;
 import com.seha.TaskProject.service.exceptions.BadUserException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -17,13 +21,19 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
+    public ArrayList<User> users = new ArrayList<>();
+
+    @Before
+    public void setup(){
+        users.add(userService.createUser(new User("testingFirstName", "testingLastName", "testingUserName", 1L)));
+    }
 
     @Test
     public void createUserWithValidData() {
-        User user = userService.createUser(new User("FredrikFredrik", "FredrikFredrik", "FredrikFredrik", 1L));
-        assertEquals("FredrikFredrik", user.getFirstName());
-        assertEquals("FredrikFredrik", user.getLastName());
-        assertEquals("FredrikFredrik", user.getUserName());
+        User fetchedUser = userService.getUserByUserNumber(users.get(0).getUserNumber()).get();
+        assertEquals(fetchedUser.getFirstName(), users.get(0).getFirstName());
+        assertEquals(fetchedUser.getLastName(), users.get(0).getLastName());
+        assertEquals(fetchedUser.getUserName(), users.get(0).getUserName());
     }
 
     @Test
@@ -36,14 +46,6 @@ public class UserServiceTest {
         }
         assertTrue(test);
     }
-    /*
-    Successfully creates a User in the database.
-     */
-    @Test
-    public void createUser() {
-        userService.createUser(new User("Semi", "Turdean", "SemiTurdean", 1L));
-    }
-
     /*
     Trying to create a User with to short userName(>10 letters) will throw a BadUserException error.
      */
@@ -63,29 +65,34 @@ public class UserServiceTest {
 
     @Test
     public void changeUsername(){
-        User user = userService.createUser(new User("muahaha", "ahahaum", "daUserName", -1L));
-        userService.changeUserName("changingName", user.getUserNumber());
-        user = userService.getUserByUserNumber(user.getUserNumber()).get();
-        assertTrue(user.getUserName().equalsIgnoreCase("changingName"));
-        userService.inactivateUser(user.getUserNumber());
+        userService.changeUserName("changingName", users.get(0).getUserNumber());
+        User fetchUser = userService.getUserByUserNumber(users.get(0).getUserNumber()).get();
+        assertTrue(fetchUser.getUserName().equalsIgnoreCase("changingName"));
+        userService.inactivateUser(users.get(0).getUserNumber());
     }
     /*
     Trying to inactivate a User with userId that exists will return a boolean value of true.
      */
-    /*
+
     @Test
     public void inactivateUser() {
         boolean userFound = userService.inactivateUser(1001L);
         assertTrue(userFound);
     }
-*/
+
     /*
     Trying to inactivate a User with userId that does not exist will return a boolean value of false.
+    */
     @Test
     public void inactivateUserNotFound() {
-        boolean userNotFound = userService.inactivateUser(1018L);
+        boolean userNotFound = userService.inactivateUser(9018L);
         assertFalse(userNotFound);
     }
-     */
+
+
+    @After
+    public void breakDown(){
+        users.forEach(u -> userService.inactivateUser(u.getUserNumber()));
+    }
 
 }
