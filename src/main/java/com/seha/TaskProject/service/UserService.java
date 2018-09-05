@@ -107,8 +107,8 @@ public final class UserService {
 
     private void setWorkItemsToUnstarted(List<WorkItem> workItems) {
         if (!workItems.isEmpty()) {
-            for (int i = 0; i < workItems.size(); i++) {
-                workItems.get(i).setStatus(Status.UNSTARTED);
+            for (WorkItem workItem : workItems) {
+                workItem.setStatus(Status.UNSTARTED);
             }
             saveWorkItems(workItems);
         }

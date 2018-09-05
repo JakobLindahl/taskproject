@@ -52,7 +52,7 @@ public final class WorkItemResource {
     public Response addWorkItemByHelperId(@PathParam("id") Long workItemId,
                                         @PathParam("userId") Long userId) {
         workItemService.addWorkItemByHelperId(workItemId, userId);
-        return Response.status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @PUT

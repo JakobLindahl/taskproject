@@ -17,6 +17,25 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
+
+    @Test
+    public void createUserWithValidData() {
+        User user = userService.createUser(new User("FredrikFredrik", "FredrikFredrik", "FredrikFredrik", 1L));
+        assertEquals("FredrikFredrik", user.getFirstName());
+        assertEquals("FredrikFredrik", user.getLastName());
+        assertEquals("FredrikFredrik", user.getUserName());
+    }
+
+    @Test
+    public void createUserWithInvalidData() {
+        boolean test = false;
+        try {
+            userService.createUser(new User("f", "f", "f", 2L));
+        } catch (BadUserException e) {
+            test = true;
+        }
+        assertTrue(test);
+    }
     /*
     Successfully creates a User in the database.
      */
@@ -41,23 +60,6 @@ public class UserServiceTest {
         userService.createUser(new User("","","", 1L));
     }
 
-    /*
-    Trying to inactivate a User with userId that exists will return a boolean value of true.
-     */
-    @Test
-    public void inactivateUser() {
-        boolean userFound = userService.inactivateUser(1001L);
-        assertTrue(userFound);
-    }
-
-    /*
-    Trying to inactivate a User with userId that does not exist will return a boolean value of false.
-     */
-    @Test
-    public void inactivateUserNotFound() {
-        boolean userNotFound = userService.inactivateUser(1018L);
-        assertFalse(userNotFound);
-    }
 
     @Test
     public void changeUsername(){
@@ -67,5 +69,23 @@ public class UserServiceTest {
         assertTrue(user.getUserName().equalsIgnoreCase("changingName"));
         userService.inactivateUser(user.getUserNumber());
     }
+    /*
+    Trying to inactivate a User with userId that exists will return a boolean value of true.
+     */
+    /*
+    @Test
+    public void inactivateUser() {
+        boolean userFound = userService.inactivateUser(1001L);
+        assertTrue(userFound);
+    }
+*/
+    /*
+    Trying to inactivate a User with userId that does not exist will return a boolean value of false.
+    @Test
+    public void inactivateUserNotFound() {
+        boolean userNotFound = userService.inactivateUser(1018L);
+        assertFalse(userNotFound);
+    }
+     */
 
 }
