@@ -15,7 +15,7 @@ public final class Issue {
     @OneToOne
     private WorkItem workItem;
 
-    protected Issue() {
+    public Issue() {
         this.description = null;
     }
 

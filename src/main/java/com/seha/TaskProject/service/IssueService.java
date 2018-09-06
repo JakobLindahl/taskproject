@@ -42,4 +42,14 @@ public final class IssueService {
         }
         return issues;
     }
+
+    public Issue getIssueByWorkItemId(Long workItemId){
+
+        Issue issue = issueRepository.findByWorkItemId(workItemId);
+        if(issue == null){
+            throw new BadIssueException("couldnt find issue");
+        } else
+        return issue;
+    }
+
 }
